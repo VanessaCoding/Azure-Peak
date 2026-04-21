@@ -1492,12 +1492,12 @@
 		if(!BP)
 			_apply_limb_state(zone, "#2f002f", 0, FALSE)
 			continue
-		if(nopain)
-			_apply_limb_state(zone, "#78a8ba", 0, FALSE)
-			continue
 		var/damage = min(BP.burn_dam + BP.brute_dam, BP.max_damage)
 		var/wound_alpha = clamp(round((damage / BP.max_damage) * 510), 0, 255)
 		var/has_bleed = _has_visible_bleed(BP)
+		if(nopain)
+			_apply_limb_state(zone, (damage || has_bleed) ? "#78a8ba" : null, 0, has_bleed)
+			continue
 		_apply_limb_state(zone, null, wound_alpha, has_bleed)
 
 /// Creates limb/wound/bleed vis objects for a zone if they don't exist
@@ -1583,10 +1583,10 @@
 	if(BP)
 		_ensure_limb_vis(zone, gender_prefix)
 		var/has_bleed = _has_visible_bleed(BP)
-		if(HAS_TRAIT(H, TRAIT_NOPAIN))
-			_apply_limb_state(zone, "#78a8ba", 0, FALSE)
-			return
 		var/damage = min(BP.burn_dam + BP.brute_dam, BP.max_damage)
+		if(HAS_TRAIT(H, TRAIT_NOPAIN))
+			_apply_limb_state(zone, (damage || has_bleed) ? "#78a8ba" : null, 0, has_bleed)
+			return
 		var/wound_alpha = clamp(round((damage / BP.max_damage) * 510), 0, 255)
 		_apply_limb_state(zone, null, wound_alpha, has_bleed)
 		return
