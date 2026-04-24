@@ -326,6 +326,7 @@
 	clear_party_images()
 
 	invisibility = 0
+	plane = GAME_PLANE
 	icon_state = locked_track_icon
 	name = "[icon_state] tracks"
 	desc = "Fresh prints leading away into the wilderness."
