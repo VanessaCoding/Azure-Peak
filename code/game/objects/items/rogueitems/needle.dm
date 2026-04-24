@@ -214,6 +214,8 @@
 				sewing_start_delay = 1 SECONDS
 		if(!do_after(doctor, sewing_start_delay, target = patient))
 			break
+		if(doctor.mind)
+			doctor.mind.add_sleep_experience(/datum/skill/misc/medicine, doctor.STAINT * 0.05)
 		playsound(loc, 'sound/foley/sewflesh.ogg', 100, TRUE, -2)
 		target_wound.sew_progress = min(target_wound.sew_progress + moveup, target_wound.sew_threshold)
 		var/bleedreduction = max((0.5 * medskill), 0.5)
@@ -238,7 +240,10 @@
 		if(target_wound.sew_progress < target_wound.sew_threshold)
 			continue
 		if(doctor.mind)
-			doctor.mind.add_sleep_experience(/datum/skill/misc/medicine, doctor.STAINT * 2.5)
+			var/exp_scale = target_wound.sew_threshold / 600
+			var/base_exp = doctor.STAINT * 2.5
+			doctor.mind.add_sleep_experience(/datum/skill/misc/medicine, base_exp * exp_scale)
+			to_chat(world, span_danger("ADDED [base_exp * exp_scale] EXP"))
 		use(1)
 		target_wound.sew_wound()
 		if(patient == doctor)
