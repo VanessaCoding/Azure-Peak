@@ -11,14 +11,12 @@
 	cmode_music = 'sound/music/combat_dwarf.ogg'
 	extra_context = "Only the dwarves who swore an Oath to the ten may become Trollslayers." // dwarf exclusive and will force Ravox
 
-	traits_applied = list(TRAIT_CRITICAL_RESISTANCE, TRAIT_SHIRTLESS) //TRAIT_SHIRTLESS prevents equip on the head, armor and shirt slots and enables class-specific weapons
+	traits_applied = list(TRAIT_CRITICAL_RESISTANCE, TRAIT_BLOOD_RESISTANCE, TRAIT_IGNOREDAMAGESLOWDOWN, TRAIT_SHIRTLESS) //TRAIT_SHIRTLESS prevents equip on the head, armor and shirt slots and enables class-specific weapons
 	subclass_stats = list( 
-		STATKEY_STR = 2, 
+		STATKEY_STR = 2,
 		STATKEY_CON = 5,
 		STATKEY_WIL = 2,
-		STATKEY_INT = -3, // Brain dented in an accident involving 2 squirrels and a drunk zizite.
 		STATKEY_SPD = -1,
-		STATKEY_PER = -1
 	)
 
 	subclass_skills = list(
@@ -30,6 +28,7 @@
 		/datum/skill/misc/tracking = SKILL_LEVEL_JOURNEYMAN,
 		/datum/skill/labor/butchering = SKILL_LEVEL_JOURNEYMAN, // Butcher trolls
 		/datum/skill/misc/medicine = SKILL_LEVEL_APPRENTICE, // Sew up the countless holes you will be receiving
+		/datum/skill/misc/reading = SKILL_LEVEL_NOVICE // Just to be able to read work scrolls, man.
 	)
 	adv_stat_ceiling = list(STAT_STRENGTH = 12) // I'm sorry but you're not grabbing muscular and aiming chest with 12 speed 17 strength swift intent spam.
 
@@ -52,12 +51,12 @@
 			/obj/item/rope/chain = 1,
 			/obj/item/natural/head/troll = 1 // will spawn inside of the belt but I can't be bothered to make it spawn in the headhook
 		)
-		var/weapons = list("Hatchets", "Greataxe")
+		var/weapons = list("Hatchets (Dual Wielder)", "Greataxe")
 		var/weapon_choice = input("Choose your weapon", "How will you channel your rage?") as anything in weapons
 		switch(weapon_choice)
 			if("Greataxe")
 				backl = /obj/item/rogueweapon/stoneaxe/battle/slayer
-			if("Hatchets")
+			if("Hatchets (Dual Wielder)")
 				backl = /obj/item/rogueweapon/stoneaxe/woodcut/steel/slayer
 				beltl = /obj/item/rogueweapon/stoneaxe/woodcut/steel/slayer
 				ADD_TRAIT(H, TRAIT_DUALWIELDER, TRAIT_GENERIC)
@@ -71,7 +70,7 @@
 	icon_state = "slayer_axe"
 	icon = 'icons/roguetown/weapons/axes32.dmi'
 	wlength = WLENGTH_NORMAL
-	wbalance = WBALANCE_SWIFT
+	wbalance = WBALANCE_NORMAL
 	thrown_bclass = BCLASS_CHOP
 	throwforce = 30
 	embedding = list("embedded_pain_multiplier" = 4, "embed_chance" = 35, "embedded_fall_chance" = 10)
@@ -134,8 +133,8 @@
 		/datum/species/dwarf,
 		/datum/species/dwarf/mountain
 		)
-	surgery_cover = FALSE 
-	max_integrity = 135
+	surgery_cover = FALSE
+	max_integrity = 250
 	sewrepair = FALSE
 	repairmsg_begin = "The thick skin cover starts to bulge and repair tears"
 	repairmsg_continue = "More of the tears on the skin close up"
@@ -143,7 +142,7 @@
 	repairmsg_end = "Your skin looks just as shiny as ever, like it might stop the blow of a fully grown troll once more."
 
 	interrupt_damount = 25
-	repair_time = 35 SECONDS
+	repair_time = 25 SECONDS
 
 /obj/item/clothing/suit/roguetown/armor/regenerating/slayer/Initialize(mapload)
 	. = ..()
@@ -163,7 +162,7 @@
 	desc = "You channel your divine rage and turn into an unstoppable juggernaut of steel. You will not defend yourself from attacks while it lasts."
 	overlay_state = "axedance"
 	antimagic_allowed = TRUE
-	recharge_time = 3 MINUTES
+	recharge_time = 2 MINUTES
 	ignore_cockblock = TRUE
 	invocations = list("WITNESS ME!!!")
 	invocation_type = "shout"
@@ -183,8 +182,8 @@
 	var/outline_colour = "#EB4445"
 	id = "axedance"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/axedance
-	duration = 30 SECONDS // should be enough to balance it out
-	effectedstats = list("speed" = 3, "strength" = 3)
+	duration = 20 SECONDS // should be enough to balance it out
+	effectedstats = list("speed" = 2, "strength" = 2)
 
 /datum/status_effect/buff/axedance/on_apply()
 	. = ..()
@@ -210,7 +209,6 @@
 	REMOVE_TRAIT(owner, TRAIT_NODEF, STATUS_EFFECT_TRAIT)
 	REMOVE_TRAIT(owner, TRAIT_NOPAINSTUN, STATUS_EFFECT_TRAIT)
 	owner.apply_status_effect(/datum/status_effect/debuff/axe_exhaustion)
-	owner.stamina = 400
 
 #undef AXEDANCE_FILTER
 
@@ -223,7 +221,7 @@
 	var/outline_colour = "#EB4445"
 	id = "axe_axhaustion"
 	alert_type = /atom/movable/screen/alert/status_effect/debuff/axe_exhaustion
-	duration = 8 SECONDS // actually let people get away from him after the rage.
+	duration = 1 SECONDS // actually let people get away from him after the rage.
 	effectedstats = list("speed" = -5)
 
 /obj/item/storage/belt/rogue/leather/slayer
