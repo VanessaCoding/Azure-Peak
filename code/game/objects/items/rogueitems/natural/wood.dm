@@ -188,15 +188,22 @@
 	if(I.tool_behaviour == TOOL_SAW)
 		playsound(get_turf(src.loc), 'sound/foley/sawing.ogg', 100)
 		user.visible_message("<span class='notice'>[user] starts sawing planks from [src].</span>")
-		if(do_after(user, planking_time))
-			if(user.is_holding(src))
-				user.dropItemToGround(src)
-			for(var/i=1, i<=woodtotal, ++i)
-				new /obj/item/natural/wood/plank(get_turf(src.loc))
-			user.mind.add_sleep_experience(/datum/skill/craft/carpentry, (user.STAINT*0.5))
-			new /obj/effect/decal/cleanable/debris/woody(get_turf(src))
-			qdel(src)
-			return
+		var/stackcount = 0
+		for(var/obj/item/grown/log/tree/small in get_turf(src))
+		 stackcount++
+		while(stackcount > 0)
+			if(do_after(user, planking_time))
+				if(user.is_holding(src))
+					user.dropItemToGround(src)
+				for(var/i=1, i<=woodtotal, ++i)
+					new /obj/item/natural/wood/plank(get_turf(src.loc))
+				user.mind.add_sleep_experience(/datum/skill/craft/carpentry, (user.STAINT*0.5))
+				new /obj/effect/decal/cleanable/debris/woody(get_turf(src))
+				var/obj/item/grown/log/tree/small/S = locate(/obj/item/grown/log/tree/small/) in get_turf(src)
+				qdel(S)
+				stackcount--
+			else
+				return
 	..()
 
 /obj/item/grown/log/tree/bowpartial

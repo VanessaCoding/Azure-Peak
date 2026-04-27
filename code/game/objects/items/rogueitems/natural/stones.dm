@@ -339,14 +339,22 @@ GLOBAL_LIST_INIT(stone_personality_descs, list(
 	if( user.used_intent.type == /datum/intent/chisel )
 		playsound(src.loc, pick('sound/combat/hits/onrock/onrock (1).ogg', 'sound/combat/hits/onrock/onrock (2).ogg', 'sound/combat/hits/onrock/onrock (3).ogg', 'sound/combat/hits/onrock/onrock (4).ogg'), 100)
 		user.visible_message("<span class='info'>[user] chisels the stone into a block.</span>")
-		if(do_after(user, work_time))
-			new /obj/item/natural/stoneblock(get_turf(src.loc))
-			if(HAS_TRAIT(user, TRAIT_MASTER_MASON)) //double the amount for any in a stone worker role
+		var/stackcount = 0
+		for(var/obj/item/natural/stone in get_turf(src))
+			stackcount++
+		while(stackcount > 0)
+			if(do_after(user, work_time, target = src))
 				new /obj/item/natural/stoneblock(get_turf(src.loc))
-			new /obj/effect/decal/cleanable/debris/stony(get_turf(src))
-			playsound(src.loc, pick('sound/combat/hits/onrock/onrock (1).ogg', 'sound/combat/hits/onrock/onrock (2).ogg', 'sound/combat/hits/onrock/onrock (3).ogg', 'sound/combat/hits/onrock/onrock (4).ogg'), 100)
-			qdel(src)
-			user.mind.add_sleep_experience(/datum/skill/craft/masonry, (user.STAINT*0.2))
+				if(HAS_TRAIT(user, TRAIT_MASTER_MASON)) //double the amount for any in a stone worker role
+					new /obj/item/natural/stoneblock(get_turf(src.loc))
+				new /obj/effect/decal/cleanable/debris/stony(get_turf(src))
+				playsound(src.loc, pick('sound/combat/hits/onrock/onrock (1).ogg', 'sound/combat/hits/onrock/onrock (2).ogg', 'sound/combat/hits/onrock/onrock (3).ogg', 'sound/combat/hits/onrock/onrock (4).ogg'), 100)
+				var/obj/item/natural/stone/S = locate(/obj/item/natural/stone) in get_turf(src)
+				qdel(S)
+				user.mind.add_sleep_experience(/datum/skill/craft/masonry, (user.STAINT*0.2))
+				stackcount--
+			else
+				return
 		return
 	else if(istype(W, /obj/item/rogueweapon/chisel/assembly))
 		to_chat(user, span_warning("You most use both hands to chisel blocks."))
