@@ -11,7 +11,7 @@
 	cmode_music = 'sound/music/combat_dwarf.ogg'
 	extra_context = "Only the dwarves who swore an Oath to the ten may become Trollslayers." // dwarf exclusive and will force Ravox
 
-	traits_applied = list(TRAIT_CRITICAL_RESISTANCE, TRAIT_BLOOD_RESISTANCE, TRAIT_IGNOREDAMAGESLOWDOWN, TRAIT_SHIRTLESS) //TRAIT_SHIRTLESS prevents equip on the head, armor and shirt slots and enables class-specific weapons
+	traits_applied = list(TRAIT_CRITICAL_RESISTANCE, TRAIT_SHIRTLESS) //TRAIT_SHIRTLESS prevents equip on the head, armor and shirt slots and enables class-specific weapons
 	subclass_stats = list( 
 		STATKEY_STR = 2,
 		STATKEY_CON = 5,
